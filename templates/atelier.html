@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Rayonnement Solaire — Nice</title>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; background: #fffbf0; }
+    h1 { color: #e67e22; }
+    #chart { width: 100%; height: 520px; }
+  </style>
+</head>
+<body>
+  <h1>☀️ Rayonnement Solaire — Nice</h1>
+  <div id="chart"></div>
+
+  <script>
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(init);
+
+    async function init() {
+      const res = await fetch('/nice');
+      const json = await res.json();
+
+      const data = new google.visualization.DataTable();
+      data.addColumn('datetime', 'Date/Heure');
+      data.addColumn('number', 'Rayonnement (W/m²)');
+
+      json.forEach(p => {
+        const [datePart, timePart] = p.datetime.split('T');
+        const [y, m, d] = datePart.split('-').map(Number);
+        const [hh, mm] = timePart.split(':').map(Number);
+        data.addRow([new Date(y, m-1, d, hh, mm), p.radiation_wm2]);
+      });
+
+      const options = {
+        title: 'Rayonnement solaire à Nice (horaire)',
+        legend: { position: 'bottom' },
+        hAxis: { title: 'Date/Heure', format: 'dd/MM HH:mm' },
+        vAxis: { title: 'W/m²' },
+        colors: ['#e67e22'],
+        areaOpacity: 0.4
+      };
+
+      const chart = new google.visualization.AreaChart(document.getElementById('chart'));
+      chart.draw(data, options);
+    }
+  </script>
+</body>
+</html>
