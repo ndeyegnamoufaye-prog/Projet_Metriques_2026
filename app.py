@@ -29,11 +29,6 @@ def api_paris():
 
     return jsonify(result)
 
-
-
-
-
-
 # Ne rien mettre après ce commentaire
     
 if __name__ == "__main__":
