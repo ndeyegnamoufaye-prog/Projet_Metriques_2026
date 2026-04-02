@@ -30,6 +30,10 @@ def api_paris():
     ]
     return jsonify(result)
 
+@app.route("/histogramme")
+def monhistogramme():
+    return render_template("histogramme.html")
+
 
 @app.route("/rapport")
 def mongraphique():
